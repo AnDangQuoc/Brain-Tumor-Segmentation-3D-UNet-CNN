@@ -8,9 +8,9 @@ from functools import partial
 import pandas as pd
 import numpy as np
 
-from keras import backend as K
-from keras.engine import Model
-from keras.optimizers import Adam, RMSprop, Adadelta, SGD
+from tensorflow.keras import backend as K
+from tensorflow.keras.engine import Model
+from tensorflow.keras.optimizers import Adam, RMSprop, Adadelta, SGD
 # K.set_image_dim_ordering('th')
 # K.image_data_format('tf')
 K.tensorflow_backend.set_image_dim_ordering('tf')
