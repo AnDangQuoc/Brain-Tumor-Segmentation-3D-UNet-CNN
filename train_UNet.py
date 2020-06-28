@@ -9,6 +9,8 @@ from functools import partial
 import pandas as pd
 import numpy as np
 
+import tensorflow
+
 from tensorflow.keras import backend as K
 from tensorflow.keras import Model
 from tensorflow.keras.optimizers import Adam, RMSprop, Adadelta, SGD
@@ -42,14 +44,14 @@ def train_unet(model, num_outputs, load_weights_filepath=None):
         model.load_weights(load_weights_filepath, by_name=True)
 
     # Callbacks:
-    early_stopping_cb = keras.callbacks.EarlyStopping(
+    early_stopping_cb = tensorflow.keras.callbacks.EarlyStopping(
         monitor='val_loss', min_delta=0, patience=10, verbose=2, mode='auto')
     # cb_2 = keras.callbacks.ModelCheckpoint(filepath="./weights/3pred_weights.{epoch:02d}-{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=1)
     filename = f"model_weights_{num_outputs}_outputs.h5"
-    model_checkpoint_cb = keras.callbacks.ModelCheckpoint(filepath=str(
-        weights_dir / filename), monitor='val_loss', verbose=2, save_best_only=True, save_weights_only=False, mode='auto', period=1)
-    tensorboard_cb = keras.callbacks.TensorBoard(log_dir=str(log_dir / f"{model_name}"), histogram_freq=0, batch_size=32, write_graph=True, write_grads=False,
-                                                 write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None, update_freq='epoch')
+    model_checkpoint_cb = tensorflow.keras.callbacks.ModelCheckpoint(filepath=str(
+        weights_dir / filename), monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', save_freq='epoch')
+    tensorboard_cb = tensorflow.keras.callbacks.TensorBoard(log_dir=str(log_dir / f"{model_name}"), histogram_freq=0, profile_batch=32, write_graph=True,
+                                                            write_images=False, embeddings_freq=0, embeddings_metadata=None, update_freq='epoch')
 
     # Params for generators:
     params = {'dim': (160, 192, 160),
