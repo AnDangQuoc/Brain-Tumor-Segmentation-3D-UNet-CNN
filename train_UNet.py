@@ -86,7 +86,7 @@ def train_unet(model, num_outputs, load_weights_filepath=None):
 
 if __name__ == '__main__':
 
-    num_outputs = 1
+    num_outputs = 2
 
     model = create_model(input_shape=(4, 160, 192, 160),
                          n_base_filters=12,
@@ -99,4 +99,4 @@ if __name__ == '__main__':
                          learning_rate=1e-2,
                          activation_name="sigmoid")
 
-    train_unet(model, num_outputs)
+    # train_unet(model, num_outputs)
