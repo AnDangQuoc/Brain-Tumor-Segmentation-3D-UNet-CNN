@@ -99,4 +99,4 @@ if __name__ == '__main__':
                          learning_rate=1e-2,
                          activation_name="sigmoid")
 
-    # train_unet(model, num_outputs)
+    train_unet(model, num_outputs)
