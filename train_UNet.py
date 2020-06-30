@@ -2,6 +2,8 @@ from tensorflow.python.client import device_lib
 from unet_utils import *
 from unet_utils import weights_dir, log_dir
 
+from model import *
+
 import pickle
 
 from functools import partial
@@ -19,10 +21,11 @@ from tensorflow.keras.optimizers import Adam, RMSprop, Adadelta, SGD
 # K.tensorflow_backend.set_image_dim_ordering('tf')
 K.set_image_data_format('channels_first')
 
-try:
-    from keras.engine import merge
-except ImportError:
-    from keras.layers.merge import concatenate
+# try:
+#     from keras.engine import merge
+# except ImportError:
+#     from keras.layers.merge import concatenate
+
 
 print(device_lib.list_local_devices())
 print(len(device_lib.list_local_devices()))
@@ -90,15 +93,16 @@ if __name__ == '__main__':
 
     num_outputs = 2
 
-    model = create_model(input_shape=(4, 160, 192, 160),
-                         n_base_filters=12,
-                         depth=5,
-                         dropout_rate=0.3,
-                         n_segmentation_levels=3,
-                         n_labels=3,
-                         num_outputs=num_outputs,
-                         optimizer='adam',
-                         learning_rate=1e-2,
-                         activation_name="sigmoid")
+    model = create_model_2(input_shape=(4, 160, 192, 160),
+                           n_base_filters=12,
+                           depth=5,
+                           dropout_rate=0.3,
+                           n_segmentation_levels=3,
+                           n_labels=3,
+                           num_outputs=num_outputs,
+                           optimizer='adam',
+                           learning_rate=1e-2,
+                           activation_name="sigmoid",
+                           branch_enable=1)
 
-    train_unet(model, num_outputs)
+    # train_unet(model, num_outputs)

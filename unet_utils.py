@@ -374,6 +374,7 @@ def create_model(input_shape=(4, 160, 192, 160),
     current_layer = inputs
     level_output_layers = list()
     level_filters = list()
+    # Layer 0 -> depth -1 (depth layers)
     for level_number in range(depth):
         n_level_filters = (2**level_number) * n_base_filters
         level_filters.append(n_level_filters)
@@ -392,6 +393,7 @@ def create_model(input_shape=(4, 160, 192, 160),
         current_layer = summation_layer
 
     segmentation_layers = list()
+    # Layer depth - 2 -> 0 (depth -1 layers)
     for level_number in range(depth - 2, -1, -1):
         up_sampling = create_up_sampling_module(
             current_layer, level_filters[level_number])
@@ -493,6 +495,7 @@ def create_model(input_shape=(4, 160, 192, 160),
 
     # add the parameter that allows me to show everything instead of cutting it off
     print(model.summary(line_length=150))
+    keras.utils.plot_model(model, "my_first_model.png")
 
     return model
 
