@@ -11,6 +11,8 @@ import numpy as np
 from keras import backend as K
 from keras.engine import Model
 from keras.optimizers import Adam, RMSprop, Adadelta, SGD
+import keras.backend.tensorflow_backend as tfback
+
 # K.set_image_dim_ordering('th')
 # K.image_data_format('tf')
 K.tensorflow_backend.set_image_dim_ordering('tf')
@@ -22,8 +24,23 @@ except ImportError:
     from keras.layers.merge import concatenate
 
 from tensorflow.python.client import device_lib
-print(device_lib.list_local_devices())
-print(len(device_lib.list_local_devices()))
+# print(device_lib.list_local_devices())
+# print(len(device_lib.list_local_devices()))
+
+def _get_available_gpus():
+    """Get a list of available gpu devices (formatted as strings).
+
+    # Returns
+        A list of available GPU devices.
+    """
+    #global _LOCAL_DEVICES
+    if tfback._LOCAL_DEVICES is None:
+        devices = tf.config.list_logical_devices()
+        tfback._LOCAL_DEVICES = [x.name for x in devices]
+    return [x for x in tfback._LOCAL_DEVICES if 'device:gpu' in x.lower()]
+
+# Fix pacakge version error
+tfback._get_available_gpus = _get_available_gpus
 
 def train_unet(model, num_outputs, load_weights_filepath=None): # num_outputs, optimizer = RMSprop(lr=5e-4)):
     """
@@ -64,10 +81,10 @@ def train_unet(model, num_outputs, load_weights_filepath=None): # num_outputs, o
         validation_generator = DataGenerator(train_val_test_dict['val'], **params)
 
     # Fit:
-    results = model.fit_generator(generator=training_generator,
+    results = model.fit(x=training_generator,
                         validation_data=validation_generator,
-                    epochs=100, 
-                    nb_worker=4,
+                    epochs=10, 
+                    workers=4,
                     callbacks=[early_stopping_cb, model_checkpoint_cb, tensorboard_cb])
 
 if __name__ == '__main__':
