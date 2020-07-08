@@ -7,6 +7,7 @@ from functools import partial
 
 import pandas as pd
 import numpy as np
+import tensorflow as tf
 
 from keras import backend as K
 from keras.engine import Model
@@ -15,7 +16,7 @@ import keras.backend.tensorflow_backend as tfback
 
 # K.set_image_dim_ordering('th')
 # K.image_data_format('tf')
-K.tensorflow_backend.set_image_dim_ordering('tf')
+# K.tensorflow_backend.set_image_dim_ordering('tf')
 K.set_image_data_format('channels_first')
 
 try:
