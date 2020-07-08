@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
     model = create_model(input_shape=(4, 160, 192, 160),
         n_base_filters=12,
-        depth=5,
+        depth=4,
         dropout_rate=0.3,
         n_segmentation_levels=3,
         n_labels=3,
