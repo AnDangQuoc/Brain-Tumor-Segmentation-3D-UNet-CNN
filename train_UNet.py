@@ -84,8 +84,8 @@ def train_unet(model, num_outputs, load_weights_filepath=None): # num_outputs, o
     # Fit:
     results = model.fit(x=training_generator,
                         validation_data=validation_generator,
-                    epochs=10, 
-                    workers=4,
+                    epochs=100, 
+                    workers=1,
                     callbacks=[early_stopping_cb, model_checkpoint_cb, tensorboard_cb])
 
 if __name__ == '__main__':
