@@ -49,3 +49,6 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+.idea
+__pycache__
