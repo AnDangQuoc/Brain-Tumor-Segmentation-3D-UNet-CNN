@@ -80,8 +80,10 @@ def train_unet(model, num_outputs, load_weights_filepath=None):
     # Fit:
     results = model.fit_generator(generator=training_generator,
                                   validation_data=validation_generator,
-                                  steps_per_epoch=1,
+                                  #   steps_per_epoch=1,
+                                  #   validation_steps=1,
                                   epochs=10,
+                                  workers=0,
                                   callbacks=[early_stopping_cb, model_checkpoint_cb, tensorboard_cb])
 
 
