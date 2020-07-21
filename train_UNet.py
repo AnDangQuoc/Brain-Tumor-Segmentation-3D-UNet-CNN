@@ -58,7 +58,8 @@ def train_unet(model, num_outputs, load_weights_filepath=None):
               'n_classes': 3,
               'n_channels': 4,
               'shuffle': True,
-              'num_outputs': num_outputs}
+              'num_outputs': num_outputs,
+              'n_branch': 3}
     # Generators:
     if num_outputs == 3:
         survival_data_df = pd.read_csv('survival_data.csv')
