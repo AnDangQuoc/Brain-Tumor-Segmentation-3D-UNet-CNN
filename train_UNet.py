@@ -22,8 +22,8 @@ try:
 except ImportError:
     from keras.layers.merge import concatenate
 
-print(device_lib.list_local_devices())
-print(len(device_lib.list_local_devices()))
+# print(device_lib.list_local_devices())
+# print(len(device_lib.list_local_devices()))
 
 
 # num_outputs, optimizer = RMSprop(lr=5e-4)):
@@ -47,7 +47,7 @@ def train_unet(model, num_outputs, load_weights_filepath=None):
     # cb_2 = keras.callbacks.ModelCheckpoint(filepath="./weights/3pred_weights.{epoch:02d}-{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=1)
     filename = f"model_weights_{num_outputs}_outputs.h5"
     model_checkpoint_cb = keras.callbacks.ModelCheckpoint(filepath=str(
-        weights_dir / filename), monitor='val_loss', verbose=2, save_best_only=True, save_weights_only=False, mode='auto', period=1)
+        weights_dir / filename), monitor='val_loss', verbose=2, save_best_only=True, save_weights_only=True, mode='auto', period=1)
     # tensorboard_cb = keras.callbacks.TensorBoard(log_dir= str(log_dir / f"{model_name}"), histogram_freq=0, batch_size=32, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None, update_freq='epoch')
     tensorboard_cb = keras.callbacks.TensorBoard(log_dir=str(log_dir / f"{model_name}"), histogram_freq=0, batch_size=32, write_graph=True,
                                                  write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None)
@@ -80,11 +80,11 @@ def train_unet(model, num_outputs, load_weights_filepath=None):
     # Fit:
     results = model.fit_generator(generator=training_generator,
                                   validation_data=validation_generator,
-                                  #   steps_per_epoch=1,
-                                  #   validation_steps=1,
                                   epochs=10,
                                   workers=0,
                                   callbacks=[early_stopping_cb, model_checkpoint_cb, tensorboard_cb])
+
+    # model.save_weights("./weights/model_3_weights.h5")
 
 
 if __name__ == '__main__':
