@@ -210,7 +210,7 @@ class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
     def __init__(self, list_IDs, batch_size=2, dim=(240, 240, 155), n_channels=4,
-                 n_classes=3, shuffle=True, num_outputs=3):
+                 n_classes=3, shuffle=True, num_outputs=3, n_branch=3):
         'Initialization'
         self.dim = dim
         self.batch_size = batch_size
@@ -223,6 +223,7 @@ class DataGenerator(keras.utils.Sequence):
         self.shuffle = shuffle
         self.on_epoch_end()
         self.num_outputs = num_outputs
+        self.n_branch = n_branch
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -287,10 +288,15 @@ class DataGenerator(keras.utils.Sequence):
                 # 2 for ED ("peritumoral edema")
                 # 4 for ET ("enhancing tumor")
                 # 0 for everything else
+                fileName = "seg_mask_3ch"
+                if self.n_branch == 1:
+                    fileName = "seg_mask_branch_1"
+                elif self.n_branch == 2:
+                    fileName = "seg_mask_branch_2"
 
                 X[i, ] = pickle.load(open(data_dir / f"{ID}_images.pkl", "rb"))
                 y1[i, ] = pickle.load(
-                    open(data_dir / f"{ID}_seg_mask_3ch.pkl", "rb"))
+                    open(data_dir / f"{ID}_{fileName}.pkl", "rb"))
 
             # print('XXXXXXXXX')
             # print(X.shape)
@@ -499,7 +505,7 @@ def create_model(input_shape=(4, 160, 192, 160),
 
     # add the parameter that allows me to show everything instead of cutting it off
     print(model.summary(line_length=150))
-
+    keras.utils.plot_model(model, "origin.png")
     return model
 
     # model.compile(optimizer=RMSprop(lr=5e-4),
