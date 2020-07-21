@@ -44,9 +44,9 @@ def train_model(model, modelName, n_branch, load_weights_filepath=None):
     early_stopping_cb = keras.callbacks.EarlyStopping(
         monitor='val_loss', min_delta=0, patience=10, verbose=2, mode='auto')
     # cb_2 = keras.callbacks.ModelCheckpoint(filepath="./weights/3pred_weights.{epoch:02d}-{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=1)
-    filename = f"model_weights_{modelName}_outputs.h5"
+    filename = f"model_weights_{modelName}_outputs_{n_branch}.h5"
     model_checkpoint_cb = keras.callbacks.ModelCheckpoint(filepath=str(
-        weights_dir / filename), monitor='val_loss', verbose=2, save_best_only=True, save_weights_only=True, mode='auto', period=1)
+        weights_dir / modelName / filename), monitor='val_loss', verbose=2, save_best_only=True, save_weights_only=True, mode='auto', period=1)
     tensorboard_cb = keras.callbacks.TensorBoard(log_dir=str(log_dir / f"{model_name}"), histogram_freq=0, batch_size=32, write_graph=True,
                                                  write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None)
 
@@ -83,7 +83,9 @@ if __name__ == '__main__':
     ]
     answers = inquirer.prompt(questions)
 
-    if answers["model"] == "first_model":
+    modelName = answers["model"]
+    n_branch = int(answers["n_branch"])
+    if modelName == "first_model":
         model = create_new_model(input_shape=(4, 160, 192, 160),
                                  n_base_filters=12,
                                  depth=5,
@@ -94,7 +96,7 @@ if __name__ == '__main__':
                                  optimizer='adam',
                                  learning_rate=1e-2,
                                  activation_name="sigmoid",
-                                 n_branch=int(answers["n_branch"]))
+                                 n_branch=n_branch)
     else:
         model = create_new_model_segment_only(input_shape=(4, 160, 192, 160),
                                               n_base_filters=12,
@@ -106,6 +108,12 @@ if __name__ == '__main__':
                                               optimizer='adam',
                                               learning_rate=1e-2,
                                               activation_name="sigmoid",
-                                              n_branch=int(answers["n_branch"]))
+                                              n_branch=n_branch)
 
-    train_model(model, answers["model"], int(answers["n_branch"]))
+    load_weights_filepath = None
+
+    if n_branch >= 2:
+        load_weights_filepath = filepath = str(
+            weights_dir / answers["model"] / f"model_weights_{modelName}_outputs_{n_branch-1}.h5")
+
+    train_model(model, modelName, n_branch, load_weights_filepath)
