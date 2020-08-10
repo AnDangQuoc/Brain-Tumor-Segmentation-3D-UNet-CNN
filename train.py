@@ -36,6 +36,7 @@ def train_model(model, modelName, n_branch, load_weights_filepath=None):
 
     model_name = f"{modelName}_ouputs"
 
+    print(load_weights_filepath)
     if load_weights_filepath:
         # by_name=True allows you to use a different architecture and bring in the weights from the matching layers
         model.load_weights(load_weights_filepath, by_name=True)
@@ -46,8 +47,8 @@ def train_model(model, modelName, n_branch, load_weights_filepath=None):
     # cb_2 = keras.callbacks.ModelCheckpoint(filepath="./weights/3pred_weights.{epoch:02d}-{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=1)
     filename = f"model_weights_{modelName}_outputs_{n_branch}.h5"
     model_checkpoint_cb = keras.callbacks.ModelCheckpoint(filepath=str(
-        weights_dir / modelName / filename), monitor='val_loss', verbose=2, save_best_only=True, save_weights_only=True, mode='auto', period=1)
-    tensorboard_cb = keras.callbacks.TensorBoard(log_dir=str(log_dir / f"{model_name}"), histogram_freq=0, batch_size=32, write_graph=True,
+        weights_dir / f"{modelName}" / f"{filename}"), monitor='val_loss', verbose=2, save_best_only=True, save_weights_only=True, mode='auto', period=1)
+    tensorboard_cb = keras.callbacks.TensorBoard(log_dir=str(log_dir / f"{model_name}" / f"{n_branch}"), histogram_freq=0, batch_size=32, write_graph=True,
                                                  write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None)
 
     # Params for generators:
@@ -86,6 +87,30 @@ if __name__ == '__main__':
     modelName = answers["model"]
     n_branch = int(answers["n_branch"])
     if modelName == "first_model":
+        if(n_branch >= 2):
+            model_temp = create_new_model(input_shape=(4, 160, 192, 160),
+                                          n_base_filters=12,
+                                          depth=5,
+                                          dropout_rate=0.3,
+                                          n_segmentation_levels=3,
+                                          n_labels=3,
+                                          num_outputs=1,
+                                          optimizer='adam',
+                                          learning_rate=1e-2,
+                                          activation_name="sigmoid",
+                                          n_branch=1)
+        if (n_branch == 3):
+            model_temp_2 = create_new_model(input_shape=(4, 160, 192, 160),
+                                            n_base_filters=12,
+                                            depth=5,
+                                            dropout_rate=0.3,
+                                            n_segmentation_levels=3,
+                                            n_labels=3,
+                                            num_outputs=1,
+                                            optimizer='adam',
+                                            learning_rate=1e-2,
+                                            activation_name="sigmoid",
+                                            n_branch=2)
         model = create_new_model(input_shape=(4, 160, 192, 160),
                                  n_base_filters=12,
                                  depth=5,
@@ -98,6 +123,31 @@ if __name__ == '__main__':
                                  activation_name="sigmoid",
                                  n_branch=n_branch)
     else:
+        if(n_branch >= 2):
+            model_temp = create_new_model_segment_only(input_shape=(4, 160, 192, 160),
+                                                       n_base_filters=12,
+                                                       depth=5,
+                                                       dropout_rate=0.3,
+                                                       n_segmentation_levels=3,
+                                                       n_labels=3,
+                                                       num_outputs=1,
+                                                       optimizer='adam',
+                                                       learning_rate=1e-2,
+                                                       activation_name="sigmoid",
+                                                       n_branch=1)
+        if (n_branch == 3):
+            model_temp_2 = create_new_model_segment_only(input_shape=(4, 160, 192, 160),
+                                                         n_base_filters=12,
+                                                         depth=5,
+                                                         dropout_rate=0.3,
+                                                         n_segmentation_levels=3,
+                                                         n_labels=3,
+                                                         num_outputs=1,
+                                                         optimizer='adam',
+                                                         learning_rate=1e-2,
+                                                         activation_name="sigmoid",
+                                                         n_branch=2)
+
         model = create_new_model_segment_only(input_shape=(4, 160, 192, 160),
                                               n_base_filters=12,
                                               depth=5,

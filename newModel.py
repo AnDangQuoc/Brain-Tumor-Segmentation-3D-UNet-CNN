@@ -216,13 +216,12 @@ def create_new_model_segment_only(input_shape=(4, 160, 192, 160),
         level_output_layers.append(summation_layer)
         current_layer = summation_layer
 
-    last_layer = current_layer
     segmentation_layers = list()
     segmentation_layers_upsampling = list()
     segmentation_layers_2 = list()
-    segmentation_layers_upsampling_2 = list()
     segmentation_layers_3 = list()
     segmentation_layers_upsampling_3 = list()
+
     # 3->0
     for level_number in range(depth - 2, -1, -1):
         up_sampling = create_up_sampling_module(
@@ -288,20 +287,33 @@ def create_new_model_segment_only(input_shape=(4, 160, 192, 160),
     # print("Saved model to disk")
 
 
-# K.set_image_dim_ordering('th')
-# K.image_data_format('tf')
-# K.tensorflow_backend.set_image_dim_ordering('tf')
-# K.set_image_data_format('channels_first')
+def create_flatten_model(input_shape=(4, 160, 192, 160),
+                         n_base_filters=12,
+                         depth=5,
+                         dropout_rate=0.3,
+                         n_segmentation_levels=3,
+                         n_labels=3,
+                         num_outputs=3,
+                         optimizer='adam',
+                         learning_rate=1e-3,
+                         activation_name="sigmoid",
+                         n_branch=1):
+
+    return
+    # K.set_image_dim_ordering('th')
+    # K.image_data_format('tf')
+    # K.tensorflow_backend.set_image_dim_ordering('tf')
+    # K.set_image_data_format('channels_first')
 
 
-# create_new_model_segment_only(input_shape=(4, 160, 192, 160),
-#                               n_base_filters=12,
-#                               depth=5,
-#                               dropout_rate=0.3,
-#                               n_segmentation_levels=3,
-#                               n_labels=3,
-#                               num_outputs=1,
-#                               optimizer='adam',
-#                               learning_rate=1e-2,
-#                               activation_name="sigmoid",
-#                               n_branch=3)
+# create_flatten_model(input_shape=(4, 160, 192, 160),
+#                      n_base_filters=12,
+#                      depth=5,
+#                      dropout_rate=0.3,
+#                      n_segmentation_levels=3,
+#                      n_labels=3,
+#                      num_outputs=1,
+#                      optimizer='adam',
+#                      learning_rate=1e-2,
+#                      activation_name="sigmoid",
+#                      n_branch=3)
